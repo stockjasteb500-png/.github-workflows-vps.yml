@@ -1,5 +1,8 @@
-name: DanzOFC_VPS_Real
-on: workflow_dispatch # Memicu VPS lewat Termux
+name: DanzOFC_Pterodactyl_30Days
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
 
 jobs:
   build:
@@ -8,14 +11,31 @@ jobs:
       - name: Menyiapkan Server Ubuntu
         uses: actions/checkout@v3
 
-      - name: Install Tmate (Akses SSH Real)
+      - name: Auto Install Pterodactyl & SSH
         run: |
           sudo apt update
+          # Install Tmate untuk akses awal
           sudo apt install tmate -y
           tmate -S /tmp/tmate.sock new-session -d
           tmate -S /tmp/tmate.sock wait tmate-ready
-          echo "--- AKSES SSH BUYER ---"
+          
+          # AUTO INSTALLER PTERODACTYL (Wings & Panel)
+          # Menggunakan script auto-install resmi/terpercaya
+          bash <(curl -s https://pterodactyl-installer.se) <<EOF
+          0
+          danz-panel
+          Asia/Jakarta
+          admin@danzofc.my.id
+          admin
+          admin
+          Danz
+          OFC
+          password123
+          EOF
+
+          echo "--- DATA AKSES SSH & PANEL ---"
           tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-          echo "-----------------------"
-          # VPS akan hidup selama 6 jam (21600 detik)
-          sleep 21600 
+          echo "Panel Login: admin / password123"
+          echo "------------------------------"
+          
+          sleep 21000
