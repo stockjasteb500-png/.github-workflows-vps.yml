@@ -1,0 +1,21 @@
+name: DanzOFC_VPS_Real
+on: workflow_dispatch # Memicu VPS lewat Termux
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Menyiapkan Server Ubuntu
+        uses: actions/checkout@v3
+
+      - name: Install Tmate (Akses SSH Real)
+        run: |
+          sudo apt update
+          sudo apt install tmate -y
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+          echo "--- AKSES SSH BUYER ---"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+          echo "-----------------------"
+          # VPS akan hidup selama 6 jam (21600 detik)
+          sleep 21600 
